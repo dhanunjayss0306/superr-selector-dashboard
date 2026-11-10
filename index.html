@@ -138,31 +138,75 @@ td,th{padding:10px 8px;font-size:13px}
 .rank{width:22px}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+.topnav{position:sticky;top:0;z-index:40;background:#fff;border-bottom:1px solid var(--line);display:flex;gap:2px;flex-wrap:wrap;padding:8px 0}
+.topnav a{color:var(--ink);text-decoration:none;font-size:14px;font-weight:600;padding:9px 12px;border-radius:8px;min-height:40px;display:inline-flex;align-items:center}
+.topnav a:hover{background:var(--card)}
+.topnav a.active{background:var(--ink);color:#fff}
+.page{display:none}
+.page.active{display:block}
+.browse-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:6px}
+.browse-card{border:1px solid var(--line);border-radius:10px;padding:16px;text-decoration:none;color:var(--ink);display:block;background:#fff}
+.browse-card:hover{border-color:var(--blue)}
+.browse-card b{display:block;font-size:16px;margin-bottom:4px}
+.browse-card span{font-size:13px;color:var(--muted);line-height:1.5;display:block}
+.results .group-head{padding:10px 14px 2px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.backlink{margin:28px 0 0;font-size:14px}
+.backlink a{font-weight:600;text-decoration:none}
+.backlink a:hover{text-decoration:underline}
+#matchSearch{flex:1;font:inherit;font-size:16px;padding:12px 14px;border:1px solid #C7C7CC;border-radius:8px;min-height:48px;width:100%}
+.clickable{cursor:pointer}
+@media(max-width:900px){.browse-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:720px){.browse-grid{grid-template-columns:1fr}.topnav a{padding:8px 9px;font-size:13px}}
 </style>
 </head>
 <body>
 <div class="wrap">
+<nav class="topnav" aria-label="Main navigation">
+<a href="#/" data-route="home">Home</a>
+<a href="#/players" data-route="players">Players</a>
+<a href="#/stadiums" data-route="stadiums">Stadiums</a>
+<a href="#/tournaments" data-route="tournaments">Tournaments</a>
+<a href="#/matches" data-route="matches">Matches</a>
+<a href="#/day" data-route="day">Best of the day</a>
+<a href="#/method" data-route="method">Method</a>
+</nav>
+<div class="page" id="page-home">
 <header class="top">
 <h1>Complete player analysis</h1>
 <p class="sub">Every player, every number, in one place. Matches played, runs, balls, how he gets out, which over and which ball trouble him, how he does under pressure, and the same for bowling. Search any player below, or use the leaderboards to compare. You do the final ranking.</p>
 <div class="stats-grid" id="datasetStats"></div>
 <div class="insights" id="insights"></div>
 </header>
+<h2 style="margin-top:30px">Browse the site</h2>
+<p class="section-sub">Everything has its own page now. Pick a section below, or use the search above to jump straight to a player, a stadium, a tournament or a match.</p>
+<div class="browse-grid">
+<a class="browse-card" href="#/players"><b>Players and leaderboards</b><span>958 players, each with a full profile, plus the top batters, top bowlers and pressure boards.</span></a>
+<a class="browse-card" href="#/stadiums"><b>Stadiums</b><span>25 India grounds. Open any ground for its best batter, best bowler and top 5 tables at that ground alone.</span></a>
+<a class="browse-card" href="#/tournaments"><b>Tournaments</b><span>138 tournaments: 5 IPL seasons, 5 Asia Cup events and 128 T20I series, each on its own page.</span></a>
+<a class="browse-card" href="#/matches"><b>Matches</b><span>All 883 matches. Open any match for its result, ground, man of the match and that day's best players.</span></a>
+<a class="browse-card" href="#/day"><b>Best of the day</b><span>Pick any of the 686 match days and see who was best on that day alone.</span></a>
+<a class="browse-card" href="#/method"><b>How the numbers are made</b><span>The exact rules behind every average, economy and pressure number on the site.</span></a>
+</div>
+</div>
 
 <div class="searchbox">
-<label for="playerSearch">Search a player</label>
+<label for="playerSearch">Search a player, a stadium, a tournament or a match</label>
 <div class="search-row">
-<input id="playerSearch" type="search" placeholder="Type a name, for example Suryakumar Yadav, Rashid Khan, Bumrah" autocomplete="off" aria-label="Search a player">
+<input id="playerSearch" type="search" placeholder="Try Suryakumar Yadav, Wankhede, IPL 2025, or Chennai Super Kings" autocomplete="off" aria-label="Search a player">
 <button class="btn" id="clearSearch" type="button">Clear</button>
 </div>
 <div class="results" id="searchResults" role="listbox"></div>
-<p class="hint">958 players have stats. Start typing and tap a name to open the full profile.</p>
+<p class="hint">Start typing and the results group themselves: players, stadiums, tournaments and matches. Tap any result to open its own page with everything about it.</p>
 </div>
 
+<div class="page" id="page-profile">
 <section id="profileSection" aria-live="polite">
 <div id="profile"></div>
 </section>
+</div>
 
+<div class="page" id="page-players">
 <section id="leaderboards">
 <h2>Leaderboards</h2>
 <p class="section-sub">Tap any column heading to sort. Tap any player row to open his full profile. Use the minimum balls filter so players with very few balls do not distort the averages.</p>
@@ -175,14 +219,32 @@ td,th{padding:10px 8px;font-size:13px}
 <div id="boardControls"></div>
 <div id="board"></div>
 </section>
-
+</div>
+<div class="page" id="page-stadiums">
 <section id="stadiums">
 <h2>Grounds in India</h2>
 <p class="section-sub">India grounds only, because the IPL teams play here. The files gave every match a venue number, not a stadium name, so each number was matched to a real stadium: take one match from the data, find that same match in a published scorecard, and the stadium in the scorecard is what the number means. For example, venue 1 is MA Chidambaram Stadium (Chepauk), Chennai, matched from Chennai Super Kings vs Lucknow Super Giants, IPL, 3 Apr 2023. Venue 3 is Wankhede Stadium, Mumbai, matched from Chennai Super Kings vs Kolkata Knight Riders, IPL, 26 Mar 2022. Venue 2 is M. Chinnaswamy Stadium, Bengaluru, matched from Royal Challengers Bengaluru vs Mumbai Indians, IPL, 2 Apr 2023. All 25 India grounds were matched this way, one by one. Open any player profile to see his full ground-by-ground record: where he played most, where his average is highest, and where he scored most. Foreign players show their single best ground in India.</p>
+<p class="hint" style="margin:0 0 10px">Tap any ground in this table to open its own page: best batter, best bowler and the top 5 tables for that ground alone.</p>
 <div id="stadiumTable"></div>
 <p class="hint" style="margin-top:10px">Rajasthan Royals home grounds in this data: Sawai Mansingh Stadium, Jaipur, and Barsapara Cricket Stadium, Guwahati, where Rajasthan Royals played home matches in IPL 2023. Mumbai has two separate grounds in the data, Wankhede Stadium and Brabourne Stadium, and Punjab has two, Mohali and Mullanpur, so a player's Mumbai or Punjab numbers are split by ground, not by city.</p>
 </section>
-
+</div>
+<div class="page" id="page-tournaments">
+<section>
+<h2>Tournaments</h2>
+<p class="section-sub">Every tournament in the data has its own page with its top 10 batters and top 10 bowlers. That is all 138 competitions: 5 IPL seasons (2022 to 2026), 5 Asia Cup events and 128 T20I series. Tap a tournament to open it.</p>
+<div class="notebox">There is no T20 World Cup and no Champions League in this dataset. The files contain only IPL, Asia Cup and T20I series matches, so those two tournaments are not shown rather than invented.</div>
+<div class="filters" id="tournListFilters" role="group" aria-label="Tournament group">
+<button type="button" data-lgroup="-1" class="active">All tournaments</button>
+<button type="button" data-lgroup="0">IPL</button>
+<button type="button" data-lgroup="1">Asia Cup</button>
+<button type="button" data-lgroup="2">T20I series</button>
+</div>
+<div id="tournList"></div>
+</section>
+</div>
+<div class="page" id="page-tournament">
+<p class="backlink"><a href="#/tournaments">&larr; All tournaments</a></p>
 <section id="tournaments">
 <h2>Tournament by tournament</h2>
 <p class="section-sub">A separate analysis for each tournament in the data: all 138 competitions that have matches. That is 5 IPL seasons (2022 to 2026), 5 Asia Cup events, and 128 T20I series. Pick a tournament to see its top 10 batters and top 10 bowlers. Every player profile also has a By tournament table with his numbers in each tournament he played.</p>
@@ -197,7 +259,8 @@ td,th{padding:10px 8px;font-size:13px}
 <select id="tournSelect" class="tourn-select" aria-label="Choose a tournament"></select>
 <div id="tournView"></div>
 </section>
-
+</div>
+<div class="page" id="page-day">
 <section id="dailyBest">
 <h2>Best of the day</h2>
 <p class="section-sub">Best of the day, from that day's matches only, not the whole dataset. Pick a date to see the matches played that day, the result and the man of the match from the document where it is given, then the top 3 batters and top 3 bowlers of that day alone. Best batter is the most runs that day (level on runs: higher strike rate wins). Best bowler is the most wickets that day (level on wickets: lower economy wins). India matches show the stadium and city. Matches outside India show the country only, because only India venues were mapped. Tap any player name to open his full profile.</p>
@@ -209,7 +272,9 @@ td,th{padding:10px 8px;font-size:13px}
 </div>
 <div id="dailyView"></div>
 </section>
-
+</div>
+<div class="page" id="page-stadium">
+<p class="backlink"><a href="#/stadiums">&larr; All grounds</a></p>
 <section id="stadiumBest">
 <h2>Best of the stadium</h2>
 <p class="section-sub">Best of the stadium, from the balls bowled at that ground only. Pick one of the 25 India stadiums to see its top 5 batters by runs, its top 5 batters by average (minimum 30 balls faced at the ground), its top 5 bowlers by wickets and its top 5 bowlers by economy (minimum 24 balls bowled at the ground). The best batter and best bowler at the ground are highlighted first. Only India stadiums are shown, because no stadium names exist for matches outside India. Tap any player name to open his full profile.</p>
@@ -217,7 +282,24 @@ td,th{padding:10px 8px;font-size:13px}
 <select id="stadiumSelect" class="tourn-select" aria-label="Choose a stadium"></select>
 <div id="stadiumBestView"></div>
 </section>
-
+</div>
+<div class="page" id="page-matches">
+<section>
+<h2>Matches</h2>
+<p class="section-sub">All 883 matches in the data, newest first. Search by team, tournament, ground or date (for example 2023-04-02) to narrow the list. Tap a match to open its own page.</p>
+<input id="matchSearch" type="search" placeholder="Search matches: team, tournament, ground or date" aria-label="Search matches" autocomplete="off">
+<p class="count-note" id="matchCount"></p>
+<div id="matchList"></div>
+<button type="button" class="btn ghost" id="matchMore" style="margin-top:14px">Show more matches</button>
+</section>
+</div>
+<div class="page" id="page-match">
+<p class="backlink"><a href="#/matches">&larr; All matches</a></p>
+<section style="margin-top:18px">
+<div id="matchView"></div>
+</section>
+</div>
+<div class="page" id="page-method">
 <section>
 <h2>How the numbers are made</h2>
 <div class="method">
@@ -244,6 +326,7 @@ td,th{padding:10px 8px;font-size:13px}
 <footer>
 Dataset: IPL and T20I, 22 Jan 2022 to 1 Nov 2026. 867 matches with ball-by-ball data, 200,999 deliveries, 141 competitions, 958 players with stats (888 batters, 647 bowlers). Total runs off the bat: 269,550. Bowler-credited wickets: 10,272. Total dismissals: 10,878. Leaderboard, grounds and tournament numbers are computed directly from the ball-by-ball file. Nothing is estimated. Career beyond this dataset figures in player profiles come from the web and were accessed on 2026-11-10. Grounds cover the 25 India stadiums for the 445 players who played in India. Tournament tables cover all 138 competitions in the files.
 </footer>
+</div>
 </div>
 
 <script>
@@ -284,17 +367,53 @@ function byName(name){ for(var i=0;i<PLAYERS.length;i++){ if(PLAYERS[i].name===n
 /* Search */
 var searchInput=document.getElementById("playerSearch");
 var resultsBox=document.getElementById("searchResults");
+var MATCH_INDEX=null;
+function buildMatchIndex(){
+  if(MATCH_INDEX) return MATCH_INDEX;
+  MATCH_INDEX=[];
+  DAILY_DATES.forEach(function(dt){
+    DAILY[dt].m.forEach(function(mm,i){
+      MATCH_INDEX.push({date:dt,i:i,a:mm[0],b:mm[1],comp:mm[2],ground:mm[3],result:mm[4],mom:mm[5]});
+    });
+  });
+  return MATCH_INDEX;
+}
 function renderSearch(q){
   q=(q||"").trim().toLowerCase();
   if(!q){ resultsBox.classList.remove("show"); resultsBox.innerHTML=""; return; }
-  var hits=PLAYERS.filter(function(p){return p.name.toLowerCase().indexOf(q)>-1;}).slice(0,12);
-  if(!hits.length){ resultsBox.innerHTML='<button type="button" disabled>No player found for that name</button>'; resultsBox.classList.add("show"); return; }
-  resultsBox.innerHTML=hits.map(function(p){
-    var detail=[];
-    if(p.bat) detail.push(fmt(p.bat.runs)+" runs");
-    if(p.bowl) detail.push(p.bowl.wickets+" wkts");
-    return '<button type="button" data-open="'+esc(p.name)+'"><span><strong>'+esc(p.name)+'</strong><br><small>'+esc((p.teams||[]).join(", "))+'</small></span><small>'+p.matches+' matches · '+detail.join(" · ")+'</small></button>';
-  }).join("");
+  var html="";
+  var players=PLAYERS.filter(function(p){return p.name.toLowerCase().indexOf(q)>-1;}).slice(0,6);
+  if(players.length){
+    html+='<div class="group-head">Players</div>'+players.map(function(p){
+      var detail=[];
+      if(p.bat) detail.push(fmt(p.bat.runs)+" runs");
+      if(p.bowl) detail.push(p.bowl.wickets+" wkts");
+      return '<button type="button" data-nav="#/player/'+encodeURIComponent(p.name)+'"><span><strong>'+esc(p.name)+'</strong><br><small>'+esc((p.teams||[]).join(", "))+'</small></span><small>'+p.matches+' matches \u00b7 '+detail.join(" \u00b7 ")+'</small></button>';
+    }).join("");
+  }
+  var stads=[];
+  STADIUMS.forEach(function(s,i){ if((s[0]+" "+s[1]).toLowerCase().indexOf(q)>-1) stads.push([s,i]); });
+  stads=stads.slice(0,4);
+  if(stads.length){
+    html+='<div class="group-head">Stadiums</div>'+stads.map(function(x){
+      return '<button type="button" data-nav="#/stadium/'+x[1]+'"><span><strong>'+esc(x[0][0])+'</strong><br><small>'+esc(x[0][1])+'</small></span><small>'+x[0][2]+' matches</small></button>';
+    }).join("");
+  }
+  var tourns=[];
+  TOURNS.forEach(function(tt,i){ if(tt.n.toLowerCase().indexOf(q)>-1) tourns.push([tt,i]); });
+  tourns=tourns.slice(0,5);
+  if(tourns.length){
+    html+='<div class="group-head">Tournaments</div>'+tourns.map(function(x){
+      return '<button type="button" data-nav="#/tournament/'+x[1]+'"><span><strong>'+esc(x[0].n)+'</strong></span><small>'+x[0].m+' matches</small></button>';
+    }).join("");
+  }
+  var matches=buildMatchIndex().filter(function(mm){return (mm.a+" "+mm.b+" "+mm.comp+" "+mm.ground+" "+mm.date).toLowerCase().indexOf(q)>-1;}).slice(0,5);
+  if(matches.length){
+    html+='<div class="group-head">Matches</div>'+matches.map(function(mm){
+      return '<button type="button" data-nav="#/match/'+mm.date+'/'+mm.i+'"><span><strong>'+esc(mm.a)+' vs '+esc(mm.b)+'</strong><br><small>'+esc(mm.comp)+' \u00b7 '+esc(mm.ground)+'</small></span><small>'+fmtDayShort(mm.date)+'</small></button>';
+    }).join("");
+  }
+  resultsBox.innerHTML = html || '<button type="button" disabled>Nothing found for that search. Try a player, stadium, tournament or team name.</button>';
   resultsBox.classList.add("show");
 }
 searchInput.addEventListener("input",function(){ renderSearch(this.value); });
@@ -304,7 +423,7 @@ document.getElementById("clearSearch").addEventListener("click",function(){ sear
 
 document.addEventListener("click",function(e){
   var t=e.target.closest("[data-open]");
-  if(t){ openProfile(t.getAttribute("data-open")); resultsBox.classList.remove("show"); }
+  if(t){ resultsBox.classList.remove("show"); location.hash="#/player/"+encodeURIComponent(t.getAttribute("data-open")); }
 });
 
 function tile(label,value,sub){ return '<div class="tile"><span>'+label+'</span><b>'+value+'</b>'+(sub?'<small>'+sub+'</small>':"")+'</div>'; }
@@ -343,7 +462,7 @@ function openProfile(name, noScroll){
   if(!p) return;
   searchInput.value=p.name;
   var html="";
-  html+='<div class="profile-head"><div><h2>'+esc(p.name)+'</h2><div class="teams">'+esc((p.teams||[]).join(" · "))+'</div></div><button type="button" class="btn ghost" onclick="document.getElementById(\'leaderboards\').scrollIntoView({behavior:\'smooth\'})">Back to leaderboards</button></div>';
+  html+='<div class="profile-head"><div><h2>'+esc(p.name)+'</h2><div class="teams">'+esc((p.teams||[]).join(" · "))+'</div></div><button type="button" class="btn ghost" onclick="location.hash=\'#/players\'">Back to leaderboards</button></div>';
   html += profileMeta(p);
 
   if(p.bat){
@@ -886,6 +1005,165 @@ renderStadiumBest();
 /* Init */
 renderBoard();
 openProfile("Suryakumar Yadav", true);
+
+/* ---------- Multi-page routing, universal navigation, matches and tournament list ---------- */
+document.addEventListener("click",function(e){
+  var n=e.target.closest("[data-nav]");
+  if(n){ resultsBox.classList.remove("show"); location.hash=n.getAttribute("data-nav"); }
+});
+searchInput.addEventListener("keydown",function(e){
+  if(e.key==="Enter"){ var b=resultsBox.querySelector("button[data-nav]"); if(b){ resultsBox.classList.remove("show"); location.hash=b.getAttribute("data-nav"); } }
+});
+
+/* Stadium table rows open that stadium's own page */
+document.getElementById("stadiumTable").addEventListener("click",function(e){
+  if(e.target.closest("[data-open]")) return;
+  var tr=e.target.closest("tr");
+  if(!tr) return;
+  var rows=Array.prototype.slice.call(this.querySelectorAll("tbody tr"));
+  var i=rows.indexOf(tr);
+  if(i>-1) location.hash="#/stadium/"+i;
+});
+
+/* Tournament list page */
+var listGroup=-1;
+function renderTournList(){
+  var el=document.getElementById("tournList");
+  if(!el) return;
+  var rows=[];
+  TOURNS.forEach(function(tt,i){ if(listGroup===-1||tt.g===listGroup) rows.push([tt,i]); });
+  var html='<div class="table-wrap"><table class="mini-table stack-table"><thead><tr><th>Tournament</th><th>Type</th><th>Season</th><th>Matches</th><th>Top batter</th><th>Top bowler</th></tr></thead><tbody>';
+  rows.forEach(function(x){
+    var tt=x[0];
+    var gname=tt.g===0? "IPL" : tt.g===1? "Asia Cup" : "T20I series";
+    html+='<tr class="clickable" data-tourn="'+x[1]+'">'
+      +'<td data-label="Tournament"><span class="cell-main linklike">'+esc(tt.n)+'</span></td>'
+      +'<td data-label="Type">'+gname+'</td>'
+      +'<td data-label="Season">'+esc(tt.s)+'</td>'
+      +'<td data-label="Matches">'+tt.m+'</td>'
+      +'<td data-label="Top batter">'+(tt.bat&&tt.bat[0]? esc(tt.bat[0][0])+" \u00b7 "+fmt(tt.bat[0][1])+" runs" : "-")+'</td>'
+      +'<td data-label="Top bowler">'+(tt.bowl&&tt.bowl[0]? esc(tt.bowl[0][0])+" \u00b7 "+tt.bowl[0][1]+" wkts" : "-")+'</td>'
+      +"</tr>";
+  });
+  html+="</tbody></table></div>";
+  el.innerHTML=html+'<p class="count-note">'+rows.length+(rows.length===1?" tournament":" tournaments")+'</p>';
+}
+document.getElementById("tournList").addEventListener("click",function(e){
+  var tr=e.target.closest("[data-tourn]");
+  if(tr) location.hash="#/tournament/"+tr.getAttribute("data-tourn");
+});
+document.querySelectorAll("#tournListFilters [data-lgroup]").forEach(function(btn){
+  btn.addEventListener("click",function(){
+    document.querySelectorAll("#tournListFilters [data-lgroup]").forEach(function(b){ b.classList.remove("active"); });
+    this.classList.add("active");
+    listGroup=Number(this.getAttribute("data-lgroup"));
+    renderTournList();
+  });
+});
+
+/* Matches list page */
+var matchLimit=60, matchQuery="";
+function matchFiltered(){
+  var idx=buildMatchIndex().slice().reverse();
+  if(!matchQuery) return idx;
+  var q=matchQuery.toLowerCase();
+  return idx.filter(function(mm){ return (mm.a+" "+mm.b+" "+mm.comp+" "+mm.ground+" "+mm.date+" "+mm.result).toLowerCase().indexOf(q)>-1; });
+}
+function renderMatchList(){
+  var list=matchFiltered();
+  var shown=list.slice(0,matchLimit);
+  var html='<div class="table-wrap"><table class="mini-table stack-table"><thead><tr><th>Date</th><th>Match</th><th>Competition</th><th>Ground</th><th>Result</th></tr></thead><tbody>';
+  shown.forEach(function(mm){
+    html+='<tr class="clickable" data-match="'+mm.date+'/'+mm.i+'">'
+      +'<td data-label="Date">'+fmtDayShort(mm.date)+'</td>'
+      +'<td data-label="Match"><span class="cell-main linklike">'+esc(mm.a)+' vs '+esc(mm.b)+'</span></td>'
+      +'<td data-label="Competition">'+esc(mm.comp)+'</td>'
+      +'<td data-label="Ground">'+esc(mm.ground)+'</td>'
+      +'<td data-label="Result">'+esc(mm.result)+'</td>'
+      +"</tr>";
+  });
+  html+="</tbody></table></div>";
+  document.getElementById("matchList").innerHTML = shown.length? html : '<div class="empty">No matches found for that search.</div>';
+  document.getElementById("matchCount").textContent = fmt(list.length)+(list.length===1?" match":" matches")+(matchQuery? ' for "'+matchQuery+'"' : "")+" \u00b7 showing "+fmt(shown.length);
+  document.getElementById("matchMore").style.display = list.length>matchLimit? "" : "none";
+}
+document.getElementById("matchList").addEventListener("click",function(e){
+  var tr=e.target.closest("[data-match]");
+  if(tr) location.hash="#/match/"+tr.getAttribute("data-match");
+});
+document.getElementById("matchSearch").addEventListener("input",function(){ matchQuery=this.value.trim(); matchLimit=60; renderMatchList(); });
+document.getElementById("matchMore").addEventListener("click",function(){ matchLimit+=60; renderMatchList(); });
+
+/* Match detail page */
+function stadiumIndexFor(ground){
+  var found=-1;
+  STADBEST.forEach(function(s,i){ if(ground.indexOf(s[0])===0) found=i; });
+  return found;
+}
+function renderMatchDetail(date, idx){
+  var view=document.getElementById("matchView");
+  var day=DAILY[date];
+  if(!day || !day.m[idx]){ view.innerHTML='<div class="empty">That match was not found in the data.</div>'; return; }
+  var m=day.m[idx];
+  var si=stadiumIndexFor(m[3]);
+  var groundSub = si>-1? '<span class="linklike" data-nav="#/stadium/'+si+'">Open the stadium page</span>' : "Only India grounds have their own page";
+  var ti=-1;
+  TOURNS.forEach(function(tt,i){ if(tt.n===m[2]) ti=i; });
+  var html='<div class="profile-head"><div><h2>'+esc(m[0])+' vs '+esc(m[1])+'</h2><div class="teams">'+fmtDayLong(date)+' \u00b7 '+esc(m[2])+'</div></div></div>';
+  html+='<div class="tiles tiles3">'
+    + tile("Ground", '<span style="font-size:15px;line-height:1.35;display:block">'+esc(m[3])+'</span>', groundSub)
+    + tile("Result", '<span style="font-size:15px;line-height:1.35;display:block">'+esc(m[4])+'</span>', "")
+    + tile("Man of the match", m[5]? '<span style="font-size:17px">'+playerLink(m[5])+'</span>' : "-", m[5]? "Tap the name for his full profile" : "Not given in the document")
+    + "</div>";
+  if(ti>-1) html+='<p style="font-size:14px">Tournament: <a href="#/tournament/'+ti+'"><strong>'+esc(m[2])+'</strong></a> \u00b7 open its page for the top 10 batters and bowlers of the whole tournament.</p>';
+  if(day.b.length && day.w.length){
+    html+='<h3>Best players on this date</h3><p class="section-sub">The dashboard data holds day-level numbers, not a separate scorecard for this one match, so these are the top performers across '+(day.m.length===1? "this match" : "all "+day.m.length+" matches played on "+fmtDayShort(date))+'.</p>';
+    html+='<div class="grid2"><div><h3>Top 3 batters of the day</h3>'+dailyBatTable(day.b)+'</div><div><h3>Top 3 bowlers of the day</h3>'+dailyBowlTable(day.w)+"</div></div>";
+    html+='<p style="font-size:14px;margin-top:14px"><a href="#/day/'+date+'">Open the full Best of the day page for '+fmtDayLong(date)+'</a></p>';
+  } else {
+    html+='<div class="empty" style="margin-top:14px">This match is listed in the document, but there are no ball-by-ball rows for its date, so no best batter or bowler of the day can be worked out.</div>';
+  }
+  view.innerHTML=html;
+}
+
+/* Keep the address in step when switching inside a page */
+document.getElementById("stadiumSelect").addEventListener("change",function(){ var v="#/stadium/"+this.value; if(location.hash!==v) location.hash=v; });
+document.getElementById("tournSelect").addEventListener("change",function(){ var v="#/tournament/"+this.value; if(location.hash!==v) location.hash=v; });
+function syncDayHash(){ var v="#/day/"+DAILY_DATES[dailyState.idx]; if(location.hash!==v) history.replaceState(null,"",v); }
+document.getElementById("daySelect").addEventListener("change",syncDayHash);
+document.getElementById("dayPrev").addEventListener("click",syncDayHash);
+document.getElementById("dayNext").addEventListener("click",syncDayHash);
+
+/* Router: one page at a time */
+var PAGES={home:"page-home",players:"page-players",profile:"page-profile",stadiums:"page-stadiums",stadium:"page-stadium",tournaments:"page-tournaments",tournament:"page-tournament",matches:"page-matches",match:"page-match",day:"page-day",method:"page-method"};
+function showPage(key){
+  Object.keys(PAGES).forEach(function(k){ document.getElementById(PAGES[k]).classList.toggle("active", k===key); });
+  document.querySelectorAll(".topnav a").forEach(function(a){
+    var r=a.getAttribute("data-route");
+    var on = r===key || (key==="profile"&&r==="players") || (key==="stadium"&&r==="stadiums") || (key==="tournament"&&r==="tournaments") || (key==="match"&&r==="matches");
+    a.classList.toggle("active", !!on);
+  });
+  window.scrollTo(0,0);
+}
+function route(){
+  var h=(location.hash||"#/").replace(/^#\/?/,"");
+  var parts=h.split("/").filter(function(x){ return x!==""; });
+  if(!parts.length){ showPage("home"); return; }
+  var head=parts[0];
+  if(head==="players"){ showPage("players"); }
+  else if(head==="player"&&parts[1]){ var nm=decodeURIComponent(parts.slice(1).join("/")); if(byName(nm)) openProfile(nm,true); showPage("profile"); }
+  else if(head==="stadiums"){ showPage("stadiums"); }
+  else if(head==="stadium"){ var i=Number(parts[1]); if(!isNaN(i)&&STADBEST[i]){ stadState.idx=i; renderStadiumBest(); } showPage("stadium"); }
+  else if(head==="tournaments"){ renderTournList(); showPage("tournaments"); }
+  else if(head==="tournament"){ var ti=Number(parts[1]); if(!isNaN(ti)&&TOURNS[ti]){ tournState.group=-1; document.querySelectorAll("#tournFilters [data-tgroup]").forEach(function(b){ b.classList.toggle("active", b.getAttribute("data-tgroup")==="-1"); }); tournState.idx=ti; renderTournSelect(); tournState.idx=ti; renderTournView(); } showPage("tournament"); }
+  else if(head==="matches"){ renderMatchList(); showPage("matches"); }
+  else if(head==="match"&&parts[1]&&parts[2]!==undefined){ renderMatchDetail(parts[1], Number(parts[2])); showPage("match"); }
+  else if(head==="day"){ if(parts[1]){ var di=DAILY_DATES.indexOf(parts[1]); if(di>-1){ dailyState.idx=di; renderDailyView(); } } showPage("day"); }
+  else if(head==="method"){ showPage("method"); }
+  else { showPage("home"); }
+}
+window.addEventListener("hashchange", route);
+route();
 </script>
 </body>
 </html>
