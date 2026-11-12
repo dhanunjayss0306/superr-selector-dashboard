@@ -181,6 +181,15 @@ td,th{padding:10px 8px;font-size:13px}
 .pitch-balanced{color:var(--muted)}
 .def-list{margin:0;padding-left:18px;line-height:1.7;font-size:14px}
 .def-list li{margin-bottom:6px}
+
+.pipeline-steps{list-style:none;margin:14px 0;padding:0;display:grid;gap:10px}
+.pipeline-steps li{border:1px solid var(--line);border-radius:10px;padding:14px 16px;background:#fff}
+.pipeline-steps .st-no{display:inline-block;width:26px;height:26px;border-radius:50%;background:var(--ink);color:#fff;font-size:13px;font-weight:800;text-align:center;line-height:26px;margin-right:8px}
+.pipeline-steps b{font-size:15px}
+.pipeline-steps p{margin:6px 0 0;font-size:14px;line-height:1.6}
+.pipeline-steps .st-res{margin:8px 0 0;font-size:13px;line-height:1.55;color:var(--muted)}
+.keybox{border:1px solid #B9D9F8;background:#EFF6FF;border-radius:10px;padding:14px 16px;font-size:14px;line-height:1.6;margin:14px 0}
+.flagbox{border:1px solid #F0B8BE;background:#FFF1F2;border-radius:10px;padding:14px 16px;font-size:14px;line-height:1.6;margin:14px 0}
 </style>
 </head>
 <body>
@@ -195,6 +204,7 @@ td,th{padding:10px 8px;font-size:13px}
 <a href="#/splits" data-route="splits">Splits</a>
 <a href="#/day" data-route="day">Best of the day</a>
 <a href="#/method" data-route="method">Method</a>
+<a href="#/pipeline" data-route="pipeline">Pipeline</a>
 </nav>
 <div class="page" id="page-home">
 <header class="top">
@@ -214,6 +224,7 @@ td,th{padding:10px 8px;font-size:13px}
 <a class="browse-card" href="#/day"><b>Best of the day</b><span>Pick any of the 686 match days and see who was best on that day alone.</span></a>
 <a class="browse-card" href="#/splits"><b>Batter &amp; bowler splits</b><span>Every batter and bowler cut by phase, bowler type, clutch, match total and pitch type, with filters, plus the pitch-type table for all 30 classified venues.</span></a>
 <a class="browse-card" href="#/method"><b>How the numbers are made</b><span>The exact rules behind every average, economy and pressure number on the site.</span></a>
+<a class="browse-card" href="#/pipeline"><b>Dataset selection pipeline</b><span>How a data analyst picks the datasets: the 10 steps, the weighted scoring, and the real run — 28 candidates, 16 selected.</span></a>
 </div>
 </div>
 
@@ -445,6 +456,191 @@ td,th{padding:10px 8px;font-size:13px}
 Dataset: IPL and T20I, 22 Jan 2022 to 1 Nov 2026. 867 matches with ball-by-ball data, 200,999 deliveries, 141 competitions, 958 players with stats (888 batters, 647 bowlers). Total runs off the bat: 269,550. Bowler-credited wickets: 10,272. Total dismissals: 10,878. Leaderboard, grounds and tournament numbers are computed directly from the ball-by-ball file. Nothing is estimated. Career beyond this dataset figures in player profiles come from the web and were accessed on 2026-11-10. Grounds cover the 25 India stadiums for the 445 players who played in India. Tournament tables cover all 138 competitions in the files. Splits cover all 888 batters and 647 bowlers, with pitch types for the 30 venues with 10 or more matches.
 </footer>
 </div>
+</div>
+
+<div class="page" id="page-pipeline">
+<section>
+<h2>Dataset selection pipeline</h2>
+<p class="section-sub">Before ranking any player, a data analyst picks which datasets to trust. This page shows the pipeline — the 10 steps — and the real run of it on the Round 1 data. Objective: “Identify the Most Reliable Players Under Pressure.” Pressure = death overs 16–20 + super overs. No player rankings are made here; the top-10 batters and bowlers are his work.</p>
+<h3>The 10 steps, and what each one gave in this run</h3>
+<ol class="pipeline-steps">
+<li><span class="st-no">1</span><b>Understand the business objective</b><p>What does the company want to discover, measure, or solve? Everything after this step is judged against it.</p><p class="st-res"><b>Result:</b> “Identify the Most Reliable Players Under Pressure” — death overs 16–20 plus super overs.</p></li>
+<li><span class="st-no">2</span><b>Collect all datasets</b><p>Bring together every document available — the 5–6 source files — and identify every dataset inside them.</p><p class="st-res"><b>Result:</b> 6 source files collected (the raw CSVs), and every derived file inside them opened up — 28 candidates in total.</p></li>
+<li><span class="st-no">3</span><b>Create a dataset inventory</b><p>Name, source, size, columns, date range, and subject of each dataset, in one table.</p><p class="st-res"><b>Result:</b> 28 datasets inventoried — from ball_by_ball.csv (200,999 rows, 33 columns) to summary.json. Full table below.</p></li>
+<li><span class="st-no">4</span><b>Perform initial data profiling</b><p>Missing values, duplicates, data types, inconsistent formats, errors — measured from the real files, not guessed.</p><p class="st-res"><b>Result:</b> 0 duplicates in the raw files. Defects found: “Obstracting” vs “Obstructing” (3 rows), “Stump” vs “Stumped” (214 rows), extras columns are type codes not run counts, 16 matches with no ball rows, 41 no-result matches.</p></li>
+<li><span class="st-no">5</span><b>Evaluate dataset quality</b><p>Completeness, accuracy, consistency, validity, uniqueness — rated 1–10 on 7 dimensions for every dataset.</p><p class="st-res"><b>Result:</b> top quality 10 (DS003, DS004, DS006, DS008 — zero nulls, zero duplicates); lowest 5 (DS027 — foreign players in a list named “indian_candidates”).</p></li>
+<li><span class="st-no">6</span><b>Check relevance</b><p>Does each dataset actually contribute to the objective? High, Medium, or Low — judged against the pressure question only.</p><p class="st-res"><b>Result:</b> High 11, Medium 11, Low 6. A dataset can be excellent and still Low here (DS014 salaries, DS010 tournament form).</p></li>
+<li><span class="st-no">7</span><b>Remove redundant datasets</b><p>Identical information or overlapping records — keep the cleanest copy, drop the rest.</p><p class="st-res"><b>Result:</b> DS004 (team names already in matches.csv and the mapping file) and DS006 (squad membership covered by DS005 + DS003 + DS002) dropped as redundant. DS007 vs DS015/DS021 verified complementary (0 mismatches) — both kept.</p></li>
+<li><span class="st-no">8</span><b>Score and rank datasets</b><p>Weighted scoring across 7 criteria, then rank. Final score = sum of rating × weight.</p><p class="st-res"><b>Result:</b> DS001 ball_by_ball.csv on top at 9.50; DS027 at the bottom at 4.75. Full ranking table below.</p></li>
+<li><span class="st-no">9</span><b>Select the best 10–20</b><p>Highest value while keeping coverage of the whole problem — not just the top scores.</p><p class="st-res"><b>Result:</b> 16 selected — 6 pressure evidence, 4 opposition/context, 5 match context/joins, 1 career context. See the selection below.</p></li>
+<li><span class="st-no">10</span><b>Validate the final selection</b><p>Usable, reliable, representative, suitable — check the numbers cross-foot and the selection covers the question.</p><p class="st-res"><b>Result:</b> counts cross-foot (867/867 match_ids; players.json pressure balls equal splits death balls exactly, 0 mismatches; totals 269,550 runs / 10,272 wickets agree). All 28 scores recomputed.</p></li>
+</ol>
+<h3>The weights</h3>
+<p class="section-sub">Final score = sum of rating × weight. Each criterion is rated 1–10.</p>
+<div class="table-wrap"><table class="stack-table"><thead><tr><th>Criterion</th><th>Weight</th><th>What it means</th></tr></thead><tbody>
+<tr><td data-label="Criterion"><b>Business relevance</b></td><td data-label="Weight"><b>25%</b></td><td data-label="What it means">Does it answer the pressure question?</td></tr>
+<tr><td data-label="Criterion"><b>Data quality</b></td><td data-label="Weight"><b>20%</b></td><td data-label="What it means">The 7-dimension quality rating (accuracy, completeness, consistency, validity, uniqueness, timeliness, reliability).</td></tr>
+<tr><td data-label="Criterion"><b>Completeness</b></td><td data-label="Weight"><b>15%</b></td><td data-label="What it means">Key fields populated; coverage of players and matches.</td></tr>
+<tr><td data-label="Criterion"><b>Reliability of source</b></td><td data-label="Weight"><b>15%</b></td><td data-label="What it means">Can the source be trusted?</td></tr>
+<tr><td data-label="Criterion"><b>Analytical usefulness</b></td><td data-label="Weight"><b>10%</b></td><td data-label="What it means">How much it helps the ranking.</td></tr>
+<tr><td data-label="Criterion"><b>Timeliness</b></td><td data-label="Weight"><b>10%</b></td><td data-label="What it means">Recent enough for the question.</td></tr>
+<tr><td data-label="Criterion"><b>Uniqueness</b></td><td data-label="Weight"><b>5%</b></td><td data-label="What it means">Does it add something no other dataset has?</td></tr>
+</tbody></table></div>
+<div class="notebox"><strong>Worked example — DS001 ball_by_ball.csv = 9.50.</strong> 0.25×10 + 0.20×9 + 0.15×9 + 0.15×9 + 0.10×10 + 0.10×10 + 0.05×10 = 2.50 + 1.80 + 1.35 + 1.35 + 1.00 + 1.00 + 0.50 = <b>9.50</b>.</div>
+<h3>Full ranking — all 28 datasets</h3>
+<p class="section-sub">Sorted by weighted score. Rel = relevance, Qual = quality, Compl = completeness, Reliab = reliability, Useful = usefulness, Time = timeliness, Uniq = uniqueness.</p>
+<div class="table-wrap"><table class="stack-table"><thead><tr><th>Rank</th><th>ID</th><th>Dataset</th><th>Rel</th><th>Qual</th><th>Compl</th><th>Reliab</th><th>Useful</th><th>Time</th><th>Uniq</th><th>Score</th><th>Decision</th></tr></thead><tbody>
+<tr><td data-label="Rank"><b>1</b></td><td data-label="ID"><b>DS001</b></td><td data-label="Dataset">ball_by_ball.csv</td><td data-label="Relevance">10</td><td data-label="Quality">9</td><td data-label="Completeness">9</td><td data-label="Reliability">9</td><td data-label="Usefulness">10</td><td data-label="Timeliness">10</td><td data-label="Uniqueness">10</td><td data-label="Score"><b>9.50</b></td><td data-label="Decision"><b style="color:var(--green)">Selected</b></td></tr>
+<tr><td data-label="Rank"><b>2</b></td><td data-label="ID"><b>DS007</b></td><td data-label="Dataset">players.json</td><td data-label="Relevance">10</td><td data-label="Quality">9</td><td data-label="Completeness">9</td><td data-label="Reliability">9</td><td data-label="Usefulness">10</td><td data-label="Timeliness">10</td><td data-label="Uniqueness">8</td><td data-label="Score"><b>9.40</b></td><td data-label="Decision"><b style="color:var(--green)">Selected</b></td></tr>
+<tr><td data-label="Rank"><b>3</b></td><td data-label="ID"><b>DS015</b></td><td data-label="Dataset">splits: batters by phase (death)</td><td data-label="Relevance">10</td><td data-label="Quality">9</td><td data-label="Completeness">9</td><td data-label="Reliability">9</td><td data-label="Usefulness">10</td><td data-label="Timeliness">10</td><td data-label="Uniqueness">7</td><td data-label="Score"><b>9.35</b></td><td data-label="Decision"><b style="color:var(--green)">Selected</b></td></tr>
+<tr><td data-label="Rank"><b>3</b></td><td data-label="ID"><b>DS021</b></td><td data-label="Dataset">splits: bowlers by phase (death)</td><td data-label="Relevance">10</td><td data-label="Quality">9</td><td data-label="Completeness">9</td><td data-label="Reliability">9</td><td data-label="Usefulness">10</td><td data-label="Timeliness">10</td><td data-label="Uniqueness">7</td><td data-label="Score"><b>9.35</b></td><td data-label="Decision"><b style="color:var(--green)">Selected</b></td></tr>
+<tr><td data-label="Rank"><b>5</b></td><td data-label="ID"><b>DS023</b></td><td data-label="Dataset">splits: bowlers vs dismissed-batter role</td><td data-label="Relevance">8</td><td data-label="Quality">9</td><td data-label="Completeness">10</td><td data-label="Reliability">9</td><td data-label="Usefulness">8</td><td data-label="Timeliness">10</td><td data-label="Uniqueness">9</td><td data-label="Score"><b>8.90</b></td><td data-label="Decision"><b style="color:var(--green)">Selected</b></td></tr>
+<tr><td data-label="Rank"><b>6</b></td><td data-label="ID"><b>DS016</b></td><td data-label="Dataset">splits: batters clutch</td><td data-label="Relevance">10</td><td data-label="Quality">7</td><td data-label="Completeness">7</td><td data-label="Reliability">8</td><td data-label="Usefulness">10</td><td data-label="Timeliness">10</td><td data-label="Uniqueness">9</td><td data-label="Score"><b>8.60</b></td><td data-label="Decision"><b style="color:var(--green)">Selected</b></td></tr>
+<tr><td data-label="Rank"><b>7</b></td><td data-label="ID"><b>DS002</b></td><td data-label="Dataset">matches.csv</td><td data-label="Relevance">8</td><td data-label="Quality">8</td><td data-label="Completeness">9</td><td data-label="Reliability">9</td><td data-label="Usefulness">8</td><td data-label="Timeliness">10</td><td data-label="Uniqueness">8</td><td data-label="Score"><b>8.50</b></td><td data-label="Decision"><b style="color:var(--green)">Selected</b></td></tr>
+<tr><td data-label="Rank"><b>8</b></td><td data-label="ID"><b>DS018</b></td><td data-label="Dataset">splits: batters vs bowler type</td><td data-label="Relevance">8</td><td data-label="Quality">8</td><td data-label="Completeness">9</td><td data-label="Reliability">8</td><td data-label="Usefulness">8</td><td data-label="Timeliness">10</td><td data-label="Uniqueness">8</td><td data-label="Score"><b>8.35</b></td><td data-label="Decision"><b style="color:var(--green)">Selected</b></td></tr>
+<tr><td data-label="Rank"><b>9</b></td><td data-label="ID"><b>DS008</b></td><td data-label="Dataset">venue_mapping.md</td><td data-label="Relevance">6</td><td data-label="Quality">10</td><td data-label="Completeness">7</td><td data-label="Reliability">10</td><td data-label="Usefulness">6</td><td data-label="Timeliness">9</td><td data-label="Uniqueness">9</td><td data-label="Score"><b>8.00</b></td><td data-label="Decision"><b style="color:var(--green)">Selected</b></td></tr>
+<tr><td data-label="Rank"><b>10</b></td><td data-label="ID"><b>DS005</b></td><td data-label="Dataset">playing_eleven.csv</td><td data-label="Relevance">7</td><td data-label="Quality">8</td><td data-label="Completeness">8</td><td data-label="Reliability">9</td><td data-label="Usefulness">7</td><td data-label="Timeliness">10</td><td data-label="Uniqueness">7</td><td data-label="Score"><b>7.95</b></td><td data-label="Decision"><b style="color:var(--green)">Selected</b></td></tr>
+<tr><td data-label="Rank"><b>11</b></td><td data-label="ID"><b>DS003</b></td><td data-label="Dataset">competitions.csv</td><td data-label="Relevance">5</td><td data-label="Quality">10</td><td data-label="Completeness">10</td><td data-label="Reliability">9</td><td data-label="Usefulness">5</td><td data-label="Timeliness">10</td><td data-label="Uniqueness">6</td><td data-label="Score"><b>7.90</b></td><td data-label="Decision"><b style="color:var(--green)">Selected</b></td></tr>
+<tr><td data-label="Rank"><b>12</b></td><td data-label="ID"><b>DS017</b></td><td data-label="Dataset">splits: batters low vs high scoring games</td><td data-label="Relevance">7</td><td data-label="Quality">7</td><td data-label="Completeness">9</td><td data-label="Reliability">8</td><td data-label="Usefulness">7</td><td data-label="Timeliness">10</td><td data-label="Uniqueness">8</td><td data-label="Score"><b>7.80</b></td><td data-label="Decision"><b style="color:var(--green)">Selected</b></td></tr>
+<tr><td data-label="Rank"><b>13</b></td><td data-label="ID"><b>DS006</b></td><td data-label="Dataset">competition_team_player_mapping.csv</td><td data-label="Relevance">5</td><td data-label="Quality">10</td><td data-label="Completeness">9</td><td data-label="Reliability">9</td><td data-label="Usefulness">5</td><td data-label="Timeliness">10</td><td data-label="Uniqueness">5</td><td data-label="Score"><b>7.70</b></td><td data-label="Decision"><span style="color:var(--muted)">Rejected</span></td></tr>
+<tr><td data-label="Rank"><b>14</b></td><td data-label="ID"><b>DS022</b></td><td data-label="Dataset">splits: bowlers by pitch type</td><td data-label="Relevance">7</td><td data-label="Quality">7</td><td data-label="Completeness">7</td><td data-label="Reliability">8</td><td data-label="Usefulness">7</td><td data-label="Timeliness">10</td><td data-label="Uniqueness">8</td><td data-label="Score"><b>7.50</b></td><td data-label="Decision"><b style="color:var(--green)">Selected</b></td></tr>
+<tr><td data-label="Rank"><b>15</b></td><td data-label="ID"><b>DS004</b></td><td data-label="Dataset">teams.csv</td><td data-label="Relevance">4</td><td data-label="Quality">10</td><td data-label="Completeness">10</td><td data-label="Reliability">9</td><td data-label="Usefulness">4</td><td data-label="Timeliness">10</td><td data-label="Uniqueness">4</td><td data-label="Score"><b>7.45</b></td><td data-label="Decision"><span style="color:var(--muted)">Rejected</span></td></tr>
+<tr><td data-label="Rank"><b>16</b></td><td data-label="ID"><b>DS012</b></td><td data-label="Dataset">stadium_best.json</td><td data-label="Relevance">5</td><td data-label="Quality">9</td><td data-label="Completeness">8</td><td data-label="Reliability">8</td><td data-label="Usefulness">5</td><td data-label="Timeliness">10</td><td data-label="Uniqueness">5</td><td data-label="Score"><b>7.20</b></td><td data-label="Decision"><b style="color:var(--green)">Selected</b></td></tr>
+<tr><td data-label="Rank"><b>17</b></td><td data-label="ID"><b>DS028</b></td><td data-label="Dataset">summary.json</td><td data-label="Relevance">4</td><td data-label="Quality">9</td><td data-label="Completeness">9</td><td data-label="Reliability">9</td><td data-label="Usefulness">4</td><td data-label="Timeliness">10</td><td data-label="Uniqueness">4</td><td data-label="Score"><b>7.10</b></td><td data-label="Decision"><span style="color:var(--muted)">Rejected</span></td></tr>
+<tr><td data-label="Rank"><b>18</b></td><td data-label="ID"><b>DS020</b></td><td data-label="Dataset">splits: batters vs team</td><td data-label="Relevance">5</td><td data-label="Quality">8</td><td data-label="Completeness">8</td><td data-label="Reliability">8</td><td data-label="Usefulness">5</td><td data-label="Timeliness">10</td><td data-label="Uniqueness">6</td><td data-label="Score"><b>7.05</b></td><td data-label="Decision"><span style="color:var(--muted)">Rejected</span></td></tr>
+<tr><td data-label="Rank"><b>18</b></td><td data-label="ID"><b>DS025</b></td><td data-label="Dataset">splits: bowlers vs team</td><td data-label="Relevance">5</td><td data-label="Quality">8</td><td data-label="Completeness">8</td><td data-label="Reliability">8</td><td data-label="Usefulness">5</td><td data-label="Timeliness">10</td><td data-label="Uniqueness">6</td><td data-label="Score"><b>7.05</b></td><td data-label="Decision"><span style="color:var(--muted)">Rejected</span></td></tr>
+<tr><td data-label="Rank"><b>20</b></td><td data-label="ID"><b>DS026</b></td><td data-label="Dataset">splits: pitch_types table</td><td data-label="Relevance">6</td><td data-label="Quality">7</td><td data-label="Completeness">6</td><td data-label="Reliability">8</td><td data-label="Usefulness">6</td><td data-label="Timeliness">10</td><td data-label="Uniqueness">7</td><td data-label="Score"><b>6.95</b></td><td data-label="Decision"><b style="color:var(--green)">Selected</b></td></tr>
+<tr><td data-label="Rank"><b>21</b></td><td data-label="ID"><b>DS019</b></td><td data-label="Dataset">splits: batters vs individual bowler</td><td data-label="Relevance">5</td><td data-label="Quality">7</td><td data-label="Completeness">7</td><td data-label="Reliability">8</td><td data-label="Usefulness">5</td><td data-label="Timeliness">10</td><td data-label="Uniqueness">6</td><td data-label="Score"><b>6.70</b></td><td data-label="Decision"><span style="color:var(--muted)">Rejected</span></td></tr>
+<tr><td data-label="Rank"><b>21</b></td><td data-label="ID"><b>DS024</b></td><td data-label="Dataset">splits: bowlers vs individual batter</td><td data-label="Relevance">5</td><td data-label="Quality">7</td><td data-label="Completeness">7</td><td data-label="Reliability">8</td><td data-label="Usefulness">5</td><td data-label="Timeliness">10</td><td data-label="Uniqueness">6</td><td data-label="Score"><b>6.70</b></td><td data-label="Decision"><span style="color:var(--muted)">Rejected</span></td></tr>
+<tr><td data-label="Rank"><b>23</b></td><td data-label="ID"><b>DS010</b></td><td data-label="Dataset">tournament_stats.json</td><td data-label="Relevance">4</td><td data-label="Quality">8</td><td data-label="Completeness">8</td><td data-label="Reliability">8</td><td data-label="Usefulness">4</td><td data-label="Timeliness">10</td><td data-label="Uniqueness">5</td><td data-label="Score"><b>6.65</b></td><td data-label="Decision"><span style="color:var(--muted)">Rejected</span></td></tr>
+<tr><td data-label="Rank"><b>24</b></td><td data-label="ID"><b>DS013</b></td><td data-label="Dataset">web_player_data.json</td><td data-label="Relevance">6</td><td data-label="Quality">6</td><td data-label="Completeness">6</td><td data-label="Reliability">7</td><td data-label="Usefulness">6</td><td data-label="Timeliness">8</td><td data-label="Uniqueness">8</td><td data-label="Score"><b>6.45</b></td><td data-label="Decision"><b style="color:var(--green)">Selected</b></td></tr>
+<tr><td data-label="Rank"><b>25</b></td><td data-label="ID"><b>DS014</b></td><td data-label="Dataset">rr_auction_data.json</td><td data-label="Relevance">3</td><td data-label="Quality">8</td><td data-label="Completeness">8</td><td data-label="Reliability">8</td><td data-label="Usefulness">3</td><td data-label="Timeliness">9</td><td data-label="Uniqueness">9</td><td data-label="Score"><b>6.40</b></td><td data-label="Decision"><span style="color:var(--muted)">Rejected</span></td></tr>
+<tr><td data-label="Rank"><b>26</b></td><td data-label="ID"><b>DS009</b></td><td data-label="Dataset">venue_stats.json</td><td data-label="Relevance">5</td><td data-label="Quality">6</td><td data-label="Completeness">6</td><td data-label="Reliability">8</td><td data-label="Usefulness">5</td><td data-label="Timeliness">10</td><td data-label="Uniqueness">6</td><td data-label="Score"><b>6.35</b></td><td data-label="Decision"><span style="color:var(--muted)">Rejected</span></td></tr>
+<tr><td data-label="Rank"><b>27</b></td><td data-label="ID"><b>DS011</b></td><td data-label="Dataset">daily_best.json</td><td data-label="Relevance">3</td><td data-label="Quality">8</td><td data-label="Completeness">8</td><td data-label="Reliability">8</td><td data-label="Usefulness">3</td><td data-label="Timeliness">10</td><td data-label="Uniqueness">4</td><td data-label="Score"><b>6.25</b></td><td data-label="Decision"><span style="color:var(--muted)">Rejected</span></td></tr>
+<tr><td data-label="Rank"><b>28</b></td><td data-label="ID"><b>DS027</b></td><td data-label="Dataset">indian_player_candidates.json</td><td data-label="Relevance">3</td><td data-label="Quality">5</td><td data-label="Completeness">6</td><td data-label="Reliability">5</td><td data-label="Usefulness">3</td><td data-label="Timeliness">9</td><td data-label="Uniqueness">3</td><td data-label="Score"><b>4.75</b></td><td data-label="Decision"><span style="color:var(--muted)">Rejected</span></td></tr>
+</tbody></table></div>
+<h3>The inventory — all 28 candidates</h3>
+<p class="section-sub">Name, size, weighted score, and whether it was selected. Scope: IPL 2022–2026 + T20I series, 2022-01-22 to 2026-11-01.</p>
+<div class="table-wrap"><table class="stack-table"><thead><tr><th>ID</th><th>Dataset</th><th>Rows</th><th>Score</th><th>Decision</th></tr></thead><tbody>
+<tr><td data-label="ID"><b>DS001</b></td><td data-label="Dataset">ball_by_ball.csv</td><td data-label="Rows">200,999</td><td data-label="Score"><b>9.50</b></td><td data-label="Decision"><b style="color:var(--green)">Selected</b></td></tr>
+<tr><td data-label="ID"><b>DS002</b></td><td data-label="Dataset">matches.csv</td><td data-label="Rows">883</td><td data-label="Score"><b>8.50</b></td><td data-label="Decision"><b style="color:var(--green)">Selected</b></td></tr>
+<tr><td data-label="ID"><b>DS003</b></td><td data-label="Dataset">competitions.csv</td><td data-label="Rows">141</td><td data-label="Score"><b>7.90</b></td><td data-label="Decision"><b style="color:var(--green)">Selected</b></td></tr>
+<tr><td data-label="ID"><b>DS004</b></td><td data-label="Dataset">teams.csv</td><td data-label="Rows">353</td><td data-label="Score"><b>7.45</b></td><td data-label="Decision"><span style="color:var(--muted)">Rejected</span></td></tr>
+<tr><td data-label="ID"><b>DS005</b></td><td data-label="Dataset">playing_eleven.csv</td><td data-label="Rows">28,381</td><td data-label="Score"><b>7.95</b></td><td data-label="Decision"><b style="color:var(--green)">Selected</b></td></tr>
+<tr><td data-label="ID"><b>DS006</b></td><td data-label="Dataset">competition_team_player_mapping.csv</td><td data-label="Rows">6,413</td><td data-label="Score"><b>7.70</b></td><td data-label="Decision"><span style="color:var(--muted)">Rejected</span></td></tr>
+<tr><td data-label="ID"><b>DS007</b></td><td data-label="Dataset">players.json</td><td data-label="Rows">958 players</td><td data-label="Score"><b>9.40</b></td><td data-label="Decision"><b style="color:var(--green)">Selected</b></td></tr>
+<tr><td data-label="ID"><b>DS008</b></td><td data-label="Dataset">venue_mapping.md</td><td data-label="Rows">25 venues</td><td data-label="Score"><b>8.00</b></td><td data-label="Decision"><b style="color:var(--green)">Selected</b></td></tr>
+<tr><td data-label="ID"><b>DS009</b></td><td data-label="Dataset">venue_stats.json</td><td data-label="Rows">447 players / 3664 player-venue rows</td><td data-label="Score"><b>6.35</b></td><td data-label="Decision"><span style="color:var(--muted)">Rejected</span></td></tr>
+<tr><td data-label="ID"><b>DS010</b></td><td data-label="Dataset">tournament_stats.json</td><td data-label="Rows">138 tournaments / 958 players / 5005 per-player rows</td><td data-label="Score"><b>6.65</b></td><td data-label="Decision"><span style="color:var(--muted)">Rejected</span></td></tr>
+<tr><td data-label="ID"><b>DS011</b></td><td data-label="Dataset">daily_best.json</td><td data-label="Rows">686 days</td><td data-label="Score"><b>6.25</b></td><td data-label="Decision"><span style="color:var(--muted)">Rejected</span></td></tr>
+<tr><td data-label="ID"><b>DS012</b></td><td data-label="Dataset">stadium_best.json</td><td data-label="Rows">25 venues</td><td data-label="Score"><b>7.20</b></td><td data-label="Decision"><b style="color:var(--green)">Selected</b></td></tr>
+<tr><td data-label="ID"><b>DS013</b></td><td data-label="Dataset">web_player_data.json</td><td data-label="Rows">332 players</td><td data-label="Score"><b>6.45</b></td><td data-label="Decision"><b style="color:var(--green)">Selected</b></td></tr>
+<tr><td data-label="ID"><b>DS014</b></td><td data-label="Dataset">rr_auction_data.json</td><td data-label="Rows">228 players (all teams); 20 RR; 12 England; 28 uncapped</td><td data-label="Score"><b>6.40</b></td><td data-label="Decision"><span style="color:var(--muted)">Rejected</span></td></tr>
+<tr><td data-label="ID"><b>DS015</b></td><td data-label="Dataset">splits: batters by phase (death)</td><td data-label="Rows">888 batters</td><td data-label="Score"><b>9.35</b></td><td data-label="Decision"><b style="color:var(--green)">Selected</b></td></tr>
+<tr><td data-label="ID"><b>DS016</b></td><td data-label="Dataset">splits: batters clutch</td><td data-label="Rows">888 batters</td><td data-label="Score"><b>8.60</b></td><td data-label="Decision"><b style="color:var(--green)">Selected</b></td></tr>
+<tr><td data-label="ID"><b>DS017</b></td><td data-label="Dataset">splits: batters low vs high scoring games</td><td data-label="Rows">888 batters</td><td data-label="Score"><b>7.80</b></td><td data-label="Decision"><b style="color:var(--green)">Selected</b></td></tr>
+<tr><td data-label="ID"><b>DS018</b></td><td data-label="Dataset">splits: batters vs bowler type</td><td data-label="Rows">888 batters (885 with data)</td><td data-label="Score"><b>8.35</b></td><td data-label="Decision"><b style="color:var(--green)">Selected</b></td></tr>
+<tr><td data-label="ID"><b>DS019</b></td><td data-label="Dataset">splits: batters vs individual bowler</td><td data-label="Rows">6935 rows (top 10 per batter)</td><td data-label="Score"><b>6.70</b></td><td data-label="Decision"><span style="color:var(--muted)">Rejected</span></td></tr>
+<tr><td data-label="ID"><b>DS020</b></td><td data-label="Dataset">splits: batters vs team</td><td data-label="Rows">4990 rows</td><td data-label="Score"><b>7.05</b></td><td data-label="Decision"><span style="color:var(--muted)">Rejected</span></td></tr>
+<tr><td data-label="ID"><b>DS021</b></td><td data-label="Dataset">splits: bowlers by phase (death)</td><td data-label="Rows">647 bowlers</td><td data-label="Score"><b>9.35</b></td><td data-label="Decision"><b style="color:var(--green)">Selected</b></td></tr>
+<tr><td data-label="ID"><b>DS022</b></td><td data-label="Dataset">splits: bowlers by pitch type</td><td data-label="Rows">647 bowlers</td><td data-label="Score"><b>7.50</b></td><td data-label="Decision"><b style="color:var(--green)">Selected</b></td></tr>
+<tr><td data-label="ID"><b>DS023</b></td><td data-label="Dataset">splits: bowlers vs dismissed-batter role</td><td data-label="Rows">647 bowlers / 10272 wickets</td><td data-label="Score"><b>8.90</b></td><td data-label="Decision"><b style="color:var(--green)">Selected</b></td></tr>
+<tr><td data-label="ID"><b>DS024</b></td><td data-label="Dataset">splits: bowlers vs individual batter</td><td data-label="Rows">3556 rows (top 10 per bowler)</td><td data-label="Score"><b>6.70</b></td><td data-label="Decision"><span style="color:var(--muted)">Rejected</span></td></tr>
+<tr><td data-label="ID"><b>DS025</b></td><td data-label="Dataset">splits: bowlers vs team</td><td data-label="Rows">3741 rows</td><td data-label="Score"><b>7.05</b></td><td data-label="Decision"><span style="color:var(--muted)">Rejected</span></td></tr>
+<tr><td data-label="ID"><b>DS026</b></td><td data-label="Dataset">splits: pitch_types table</td><td data-label="Rows">30 venues</td><td data-label="Score"><b>6.95</b></td><td data-label="Decision"><b style="color:var(--green)">Selected</b></td></tr>
+<tr><td data-label="ID"><b>DS027</b></td><td data-label="Dataset">indian_player_candidates.json</td><td data-label="Rows">331 candidate ids; india_t20i 65; foreign_t20i 751</td><td data-label="Score"><b>4.75</b></td><td data-label="Decision"><span style="color:var(--muted)">Rejected</span></td></tr>
+<tr><td data-label="ID"><b>DS028</b></td><td data-label="Dataset">summary.json</td><td data-label="Rows">dataset block + 4 top-10 lists</td><td data-label="Score"><b>7.10</b></td><td data-label="Decision"><span style="color:var(--muted)">Rejected</span></td></tr>
+</tbody></table></div>
+<h3>The selection — 16 datasets</h3>
+<p class="section-sub">Ordered by role in the analysis, not by score.</p>
+<h3>A. The pressure evidence — the ranking inputs</h3>
+<div class="table-wrap"><table class="stack-table"><thead><tr><th>ID</th><th>Dataset</th><th>Score</th><th>Why it is in</th></tr></thead><tbody>
+<tr><td data-label="ID"><b>DS001</b></td><td data-label="Dataset">ball_by_ball.csv</td><td data-label="Score"><b>9.50</b></td><td data-label="Why it is in">Ground truth. 44,492 pressure deliveries; the only place super overs (38 balls, 6 matches) exist.</td></tr>
+<tr><td data-label="ID"><b>DS007</b></td><td data-label="Dataset">players.json</td><td data-label="Score"><b>9.40</b></td><td data-label="Why it is in">Per-player pressure aggregates + chase_pressure for all 888 batters / 647 bowlers; 0 mismatches vs the splits.</td></tr>
+<tr><td data-label="ID"><b>DS015</b></td><td data-label="Dataset">splits: batters by phase (death)</td><td data-label="Score"><b>9.35</b></td><td data-label="Why it is in">Batter death overs: 42,037 balls; 314 batters with 30+ balls. The primary batter input.</td></tr>
+<tr><td data-label="ID"><b>DS021</b></td><td data-label="Dataset">splits: bowlers by phase (death)</td><td data-label="Score"><b>9.35</b></td><td data-label="Why it is in">Bowler death overs: 41,866 balls, 3,264 wickets; 261 bowlers with 30+ balls. The primary bowler input.</td></tr>
+<tr><td data-label="ID"><b>DS016</b></td><td data-label="Dataset">splits: batters clutch</td><td data-label="Score"><b>8.60</b></td><td data-label="Why it is in">Won chases, overs 19–20 of won chases, not-out finishes. Tie-breaker evidence — thin (1,675 last-2 balls), never the ranking on its own.</td></tr>
+<tr><td data-label="ID"><b>DS017</b></td><td data-label="Dataset">splits: batters low vs high scoring games</td><td data-label="Score"><b>7.80</b></td><td data-label="Why it is in">Reliability in low-total games (46,045 low balls, 834 batters). Second pressure angle for batters.</td></tr>
+</tbody></table></div>
+<h3>B. Quality of opposition and context</h3>
+<div class="table-wrap"><table class="stack-table"><thead><tr><th>ID</th><th>Dataset</th><th>Score</th><th>Why it is in</th></tr></thead><tbody>
+<tr><td data-label="ID"><b>DS023</b></td><td data-label="Dataset">splits: bowlers vs dismissed-batter role</td><td data-label="Score"><b>8.90</b></td><td data-label="Why it is in">Death wickets vs top/middle order count more than tail wickets. All 10,272 wickets classified, 0 unknown.</td></tr>
+<tr><td data-label="ID"><b>DS018</b></td><td data-label="Dataset">splits: batters vs bowler type</td><td data-label="Score"><b>8.35</b></td><td data-label="Why it is in">Runs vs international / established / uncapped bowlers — separates genuine pressure players from flat-track runs.</td></tr>
+<tr><td data-label="ID"><b>DS022</b></td><td data-label="Dataset">splits: bowlers by pitch type</td><td data-label="Score"><b>7.50</b></td><td data-label="Why it is in">Death economy on batting pitches vs bowling pitches. Read with DS026.</td></tr>
+<tr><td data-label="ID"><b>DS026</b></td><td data-label="Dataset">splits: pitch_types table</td><td data-label="Score"><b>6.95</b></td><td data-label="Why it is in">Lookup table DS022 needs. Selected below the cut on coverage; 15/30 rows unnamed, 67 venues unclassified — flag that in the methodology.</td></tr>
+</tbody></table></div>
+<h3>C. Match context and joins</h3>
+<div class="table-wrap"><table class="stack-table"><thead><tr><th>ID</th><th>Dataset</th><th>Score</th><th>Why it is in</th></tr></thead><tbody>
+<tr><td data-label="ID"><b>DS002</b></td><td data-label="Dataset">matches.csv</td><td data-label="Score"><b>8.50</b></td><td data-label="Why it is in">Venue, result, win team (clutch joins), toss, stage. 41 no-result matches must be excluded from clutch claims.</td></tr>
+<tr><td data-label="ID"><b>DS005</b></td><td data-label="Dataset">playing_eleven.csv</td><td data-label="Score"><b>7.95</b></td><td data-label="Why it is in">Who actually played; batting order (role definitions); the T20I-player check behind the bowler-type rules.</td></tr>
+<tr><td data-label="ID"><b>DS003</b></td><td data-label="Dataset">competitions.csv</td><td data-label="Score"><b>7.90</b></td><td data-label="Why it is in">IPL vs T20I split — the “does it hold in the IPL only?” check.</td></tr>
+<tr><td data-label="ID"><b>DS008</b></td><td data-label="Dataset">venue_mapping.md</td><td data-label="Score"><b>8.00</b></td><td data-label="Why it is in">Stadium names for the report; all 25 Indian venues verified with sources.</td></tr>
+<tr><td data-label="ID"><b>DS012</b></td><td data-label="Dataset">stadium_best.json</td><td data-label="Score"><b>7.20</b></td><td data-label="Why it is in">Per-stadium leaders for the methodology’s venue context. Overall, not pressure — use as context only.</td></tr>
+</tbody></table></div>
+<h3>D. Career context</h3>
+<div class="table-wrap"><table class="stack-table"><thead><tr><th>ID</th><th>Dataset</th><th>Score</th><th>Why it is in</th></tr></thead><tbody>
+<tr><td data-label="ID"><b>DS013</b></td><td data-label="Dataset">web_player_data.json</td><td data-label="Score"><b>6.45</b></td><td data-label="Why it is in">The ONLY source of career/capped context: is a pressure leader an established international or an uncapped youngster? Gaps must be stated: only 332/958 players covered, 52 nationalities unverified, t20 career missing for 118/331, 58 entries outside the dataset.</td></tr>
+</tbody></table></div>
+
+<div class="keybox"><strong>The key point: this is NOT the top 16 by score.</strong> DS006 (7.70) and DS004 (7.45) scored above the cut but were rejected — they add nothing new (redundant). DS013 (6.45) and DS026 (6.95) scored below the cut but were kept — nothing else covers what they cover. Scores rank; coverage and redundancy decide.</div>
+<h3>Rejected — 12 datasets</h3>
+<div class="table-wrap"><table class="stack-table"><thead><tr><th>ID</th><th>Dataset</th><th>Score</th><th>Reason</th></tr></thead><tbody>
+<tr><td data-label="ID"><b>DS006</b></td><td data-label="Dataset">competition_team_player_mapping.csv</td><td data-label="Score"><b>7.70</b></td><td data-label="Reason">Redundant: squad membership is covered by DS005 + DS003 + DS002. Its only extra is 259 squad-only players with no stats.</td></tr>
+<tr><td data-label="ID"><b>DS004</b></td><td data-label="Dataset">teams.csv</td><td data-label="Score"><b>7.45</b></td><td data-label="Reason">Redundant: team names already exist in matches.csv and the mapping file. Display names only.</td></tr>
+<tr><td data-label="ID"><b>DS028</b></td><td data-label="Dataset">summary.json</td><td data-label="Score"><b>7.10</b></td><td data-label="Reason">Fully re-derivable from DS001/DS007; its top-10s are overall, not pressure, and could mislead.</td></tr>
+<tr><td data-label="ID"><b>DS020</b></td><td data-label="Dataset">splits: batters vs team</td><td data-label="Score"><b>7.05</b></td><td data-label="Reason">Supporting detail, not a ranking input. Recompute from DS001 if a specific “against which team” question arises.</td></tr>
+<tr><td data-label="ID"><b>DS025</b></td><td data-label="Dataset">splits: bowlers vs team</td><td data-label="Score"><b>7.05</b></td><td data-label="Reason">Same as DS020, for bowlers.</td></tr>
+<tr><td data-label="ID"><b>DS019</b></td><td data-label="Dataset">splits: batters vs individual bowler</td><td data-label="Score"><b>6.70</b></td><td data-label="Reason">Matchup anecdotes; per-matchup samples too small for a top-10 decision. Recomputable from DS001.</td></tr>
+<tr><td data-label="ID"><b>DS024</b></td><td data-label="Dataset">splits: bowlers vs individual batter</td><td data-label="Score"><b>6.70</b></td><td data-label="Reason">Same as DS019, for bowlers.</td></tr>
+<tr><td data-label="ID"><b>DS010</b></td><td data-label="Dataset">tournament_stats.json</td><td data-label="Score"><b>6.65</b></td><td data-label="Reason">Tournament form, not pressure reliability. A good season is not the same as a reliable death-overs record.</td></tr>
+<tr><td data-label="ID"><b>DS014</b></td><td data-label="Dataset">rr_auction_data.json</td><td data-label="Score"><b>6.40</b></td><td data-label="Reason">Money, not performance. It belongs to the Salaries page, not to Round 1.</td></tr>
+<tr><td data-label="ID"><b>DS009</b></td><td data-label="Dataset">venue_stats.json</td><td data-label="Score"><b>6.35</b></td><td data-label="Reason">Too thin: best_avg null 60.9%, only 447/958 players, 2 join gaps. DS012 covers the venue story more cleanly.</td></tr>
+<tr><td data-label="ID"><b>DS011</b></td><td data-label="Dataset">daily_best.json</td><td data-label="Score"><b>6.25</b></td><td data-label="Reason">Best of the day, overall not pressure. No pressure filter exists in it.</td></tr>
+<tr><td data-label="ID"><b>DS027</b></td><td data-label="Dataset">indian_player_candidates.json</td><td data-label="Score"><b>4.75</b></td><td data-label="Reason">Unreliable AND irrelevant: a list named “indian_candidates” that verifiably contains foreign players (David Wiese, Joe Root), with its selection rule undocumented.</td></tr>
+</tbody></table></div>
+<div class="flagbox"><strong>Defect — DS027 indian_player_candidates.json: do not trust it as Indian-only.</strong> The list is named “indian_candidates” but verifiably contains foreign players — David Wiese and Joe Root are in it. Its selection rule is not documented anywhere. Do not use it for anything until its rule is written down and the list is rebuilt.</div>
+<h3>Coverage check — does the selection cover the question?</h3>
+<div class="table-wrap"><table class="stack-table"><thead><tr><th>Round 1 need</th><th>Covered by</th><th>Check</th></tr></thead><tbody>
+<tr><td data-label="Round 1 need"><b>Batters under pressure</b></td><td data-label="Covered by">DS001, DS007, DS015, DS016, DS017, DS018</td><td data-label="Check">Yes — death + clutch + low-total + opposition quality</td></tr>
+<tr><td data-label="Round 1 need"><b>Bowlers under pressure</b></td><td data-label="Covered by">DS001, DS007, DS021, DS022, DS023</td><td data-label="Check">Yes — death + pitch + wicket quality</td></tr>
+<tr><td data-label="Round 1 need"><b>Death overs 16–20</b></td><td data-label="Covered by">DS001 (44,454 balls), DS015, DS021</td><td data-label="Check">Yes</td></tr>
+<tr><td data-label="Round 1 need"><b>Super overs</b></td><td data-label="Covered by">DS001 (38 balls, 6 matches)</td><td data-label="Check">Yes, but tiny — folded into death overs, never ranked on its own</td></tr>
+<tr><td data-label="Round 1 need"><b>Venue / pitch context</b></td><td data-label="Covered by">DS002, DS008, DS012, DS022, DS026</td><td data-label="Check">Yes</td></tr>
+<tr><td data-label="Round 1 need"><b>Opposition quality</b></td><td data-label="Covered by">DS018, DS023</td><td data-label="Check">Yes</td></tr>
+<tr><td data-label="Round 1 need"><b>Career / capped context</b></td><td data-label="Covered by">DS013</td><td data-label="Check">Yes, with gaps flagged</td></tr>
+<tr><td data-label="Round 1 need"><b>Joinability</b></td><td data-label="Covered by">player_id, match_id, venue_id, comp_id</td><td data-label="Check">Verified: splits↔players.json 100% (888 + 647); ball_by_ball match_ids 867/867 in matches.csv; playing_eleven covers 880/883 matches</td></tr>
+<tr><td data-label="Round 1 need"><b>Minimum sample</b></td><td data-label="Covered by">314 batters / 261 bowlers with 30+ death balls</td><td data-label="Check">Workable — a 30-ball minimum still leaves a large candidate pool</td></tr>
+<tr><td data-label="Round 1 need"><b>Representativeness</b></td><td data-label="Covered by">IPL 2022–2026 + T20I, 2022-01-22 to 2026-11-01</td><td data-label="Check">Yes for that scope; no other formats exist in the data</td></tr>
+</tbody></table></div>
+<h3>Validation (step 10)</h3>
+<div class="method"><ul>
+<li><b>Counts cross-foot.</b> ball_by_ball match_ids 867/867 in matches.csv. daily_best matches total 883 = matches.csv rows. players.json pressure balls equal splits death balls exactly (42,037 / 41,866) and per-player pressure balls match for all 888 batters and 647 bowlers (0 mismatches). Totals agree everywhere: 269,550 bat runs, 10,272 bowler-credited wickets.</li>
+<li><b>Scores recomputed.</b> All 28 weighted scores were recomputed from the ratings table; ranking order verified.</li>
+<li><b>Selection is not the top-16 by score.</b> DS006 (7.70) and DS004 (7.45) score above DS013 (6.45) and DS026 (6.95) but are rejected on redundancy; DS013 and DS026 are kept on coverage. That is the pipeline working as designed.</li>
+<li><b>Nothing was modified.</b> No existing data or dashboard file was changed. Profiling read the files only.</li>
+</ul></div>
+<h3>Still missing — gaps the selected 16 cannot fill</h3>
+<div class="method"><ul>
+<li><b>Toss splits.</b> Toss data exists in matches.csv (15 nulls) but no toss × pressure split was ever computed.</li>
+<li><b>Super-over sample is tiny.</b> 38 balls, 6 matches. Super overs cannot carry any ranking.</li>
+<li><b>No other formats.</b> IPL 2022–2026 + T20I only. No Ranji, Syed Mushtaq Ali, World Cup, or Champions League data.</li>
+<li><b>16 matches have no ball rows; 41 have no result.</b> The 41 are excluded from all clutch splits.</li>
+<li><b>Leg-byes/byes unrecoverable.</b> Extras columns are type codes, so innings totals are proxies that undercount by a few runs.</li>
+<li><b>No fielding under pressure.</b> No fielding events beyond dismissals — catches, run-outs effected, and fielding reliability cannot be measured.</li>
+<li><b>Career context is thin.</b> DS013 covers 332/958 players; 52 nationalities unverified; 118/331 missing a t20 career block.</li>
+<li><b>Spelling normalisation.</b> “Obstracting” vs “Obstructing” and “Stump” vs “Stumped” in ball_by_ball — already normalised in the splits.</li>
+<li><b>DS027 must not be used.</b> Its rule is undocumented and it contains foreign players.</li>
+</ul></div>
+<h3>The tools a real analyst uses</h3>
+<div class="method"><ul>
+<li><b>Excel</b> — the inventory and scoring tables: every dataset listed, rated, and ranked in sheets.</li>
+<li><b>Python</b> — the profiling script that measured every file (counts, nulls, duplicates, join checks).</li>
+<li><b>Pandas</b> — reading the CSVs into tables and checking counts, nulls, and duplicates.</li>
+<li><b>SQL</b> — joins and cross-foot checks, like matching match_ids across files and making totals agree.</li>
+<li><b>Power BI</b> — the dashboard visuals that show the results (this site).</li>
+</ul></div>
+<p class="backlink"><a href="#/method">Back to Method</a> · <a href="#/">Back to Home</a></p>
+</section>
 </div>
 
 <script>
@@ -1689,7 +1885,7 @@ document.querySelectorAll("#pitchFilters [data-ptype]").forEach(function(btn){
 renderSplits();
 
 /* Router: one page at a time */
-var PAGES={home:"page-home",players:"page-players",profile:"page-profile",stadiums:"page-stadiums",stadium:"page-stadium",tournaments:"page-tournaments",tournament:"page-tournament",matches:"page-matches",match:"page-match",day:"page-day",method:"page-method",salaries:"page-salaries",splits:"page-splits"};
+var PAGES={home:"page-home",players:"page-players",profile:"page-profile",stadiums:"page-stadiums",stadium:"page-stadium",tournaments:"page-tournaments",tournament:"page-tournament",matches:"page-matches",match:"page-match",day:"page-day",method:"page-method",salaries:"page-salaries",splits:"page-splits",pipeline:"page-pipeline"};
 function showPage(key){
   Object.keys(PAGES).forEach(function(k){ document.getElementById(PAGES[k]).classList.toggle("active", k===key); });
   document.querySelectorAll(".topnav a").forEach(function(a){
@@ -1716,6 +1912,7 @@ function route(){
   else if(head==="splits"){ if(parts[1]){ var sn=decodeURIComponent(parts.slice(1).join("/")); var sp=byName(sn); if(sp){ splitState.name=sp.name; if(!SPLIT_BAT[sp.id] && SPLIT_BOWL[sp.id]) splitState.mode="bowl"; else if(SPLIT_BAT[sp.id]) splitState.mode="bat"; document.getElementById("splitSearch").value=sp.name; } } renderSplits(); showPage("splits"); }
   else if(head==="salaries"){ renderSalaries(); showPage("salaries"); }
   else if(head==="method"){ showPage("method"); }
+  else if(head==="pipeline"){ showPage("pipeline"); }
   else { showPage("home"); }
 }
 window.addEventListener("hashchange", route);
