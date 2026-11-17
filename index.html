@@ -190,6 +190,25 @@ td,th{padding:10px 8px;font-size:13px}
 .pipeline-steps .st-res{margin:8px 0 0;font-size:13px;line-height:1.55;color:var(--muted)}
 .keybox{border:1px solid #B9D9F8;background:#EFF6FF;border-radius:10px;padding:14px 16px;font-size:14px;line-height:1.6;margin:14px 0}
 .flagbox{border:1px solid #F0B8BE;background:#FFF1F2;border-radius:10px;padding:14px 16px;font-size:14px;line-height:1.6;margin:14px 0}
+/* RR Team v6: pink/purple palette from the PPT slide, scoped to #page-rrteam only */
+#page-rrteam{--ink:#0B1F3A;--muted:#27374F;--blue:#E83E8C;--card:#FFF5F8;--line:#F5C6D6}
+#page-rrteam h2,#page-rrteam h3{color:#0B1F3A}
+#page-rrteam h2::after{content:"";display:block;width:48px;height:4px;background:#E83E8C;border-radius:2px;margin-top:8px}
+#page-rrteam h2.clutch-heading{color:#E83E8C}
+#page-rrteam .section-sub{color:#27374F}
+#page-rrteam .tile{background:#FFF5F8;border-color:#F5C6D6}
+#page-rrteam .tile span{color:#27374F}
+#page-rrteam .tile b{color:#0B1F3A}
+#page-rrteam .tile small{color:#27374F}
+#page-rrteam .notebox{background:#FFF5F8;border:1px solid #F5C6D6;border-left:4px solid #8B3DFF;color:#27374F}
+#page-rrteam .notebox:nth-of-type(even){border-left-color:#E83E8C}
+#page-rrteam .notebox > b{color:#0B1F3A}
+#page-rrteam .notebox .def-list b{color:#E83E8C}
+#page-rrteam .stack-table thead th{background:#FDE8F0;color:#0B1F3A}
+#page-rrteam .stack-table td{border-bottom-color:#F5C6D6}
+#page-rrteam .stack-table tr:last-child td{border-bottom:0}
+#page-rrteam tbody tr:hover{background:#FDE8F0}
+#page-rrteam .flagbox{background:#FFF5F8;border:1px solid #E83E8C;border-left:4px solid #E83E8C}
 </style>
 </head>
 <body>
@@ -269,7 +288,7 @@ td,th{padding:10px 8px;font-size:13px}
 </div>
 </section>
 <section>
-<h2>CLUTCH: why every player was chosen</h2>
+<h2 class="clutch-heading">CLUTCH: why every player was chosen</h2>
 <p class="section-sub">CLUTCH ranks players on how they perform when the match is on the line, not on their overall numbers. C is Context, the size of the occasion and the state of the match. L is Leverage, how much the next few balls or overs can change the result. U is Under-pressure output, what the player actually did in those moments. T is Temperament and Composure Delta, whether the player stays calm or gets better when the pressure rises. C is Consistency, whether the player does it again and again or only once. H is History, the record across finals, knockouts and big series over a career.</p>
 </section>
 <section>
